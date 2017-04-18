@@ -77,10 +77,23 @@ def get_one_massage(html):
             'displayAffiliation': displayAffiliation
             }
         l.append(ma)
+    print(l)
     return l
 
 def DB(date):
-    return 0
+    connection = pymysql.connect(host='localhost',user='root',password='sherlock',
+                                 db='nba',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+    try:
+        with connection.cursor() as cursor:
+            # Create a new record
+            sql = "INSERT INTO `player` (`firstname`,`lastname`,`country`,`weight`,`height`,`positions`,`jerseyNo`,`experience`,`displayAffiliation`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            for d in date:
+                print(d['firstname'])
+                print(type(d.get('firstname')),type(d.get('lastname')),type(d.get('country')),type(d.get('weight')),type(d.get('height')),type(d.get('position')),type(d.get('jerseyNo')),type(d.get('experience')),type(d.get('displayAffiliation')))
+                cursor.execute(sql,(d['firstname'],d['lastname'],d['country'],str(d['weight']),str(d['height']),d['position'],d['jerseyNo'],str(d['experience']),d['displayAffiliation']))
+                connection.commit()
+    finally:
+        connection.close()
         
 def main():
     i = 1
